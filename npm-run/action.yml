@@ -1,0 +1,41 @@
+name: Run a command in node environment
+description: A GitHub action setting up node, installing npm packages and running a specified command
+
+inputs:
+  node-version:
+    description: 'Version Spec of the version to use.  Examples: 12.x, 10.15.1, >=10.15.0'
+  registry-url:
+    description: >
+      Optional registry to set up for auth. Will set the registry
+      in a project level .npmrc and .yarnrc file, and set up auth to read in from env.NODE_AUTH_TOKEN
+  scope:
+    description: Optional scope for authenticating against scoped registries
+  directory:
+    description: A directory to run the command in
+    default: ./
+  command:
+    description: A shell command to run
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: Set up Node
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ inputs.node-version }}
+        registry-url: ${{ inputs.registry-url }}
+        scope: ${{ inputs.scope }}
+    - name: Install
+      run: |
+        cd ${{ inputs.directory }}
+        npm install
+      shell: bash
+    - name: Execute the command
+      run: |
+        cd ${{ inputs.directory }}
+        ${{ inputs.command }}
+      shell: bash
