@@ -1,0 +1,33 @@
+name: Test the create_release action
+
+on:
+  workflow_dispatch:
+    branches: '*'
+  pull_request:
+    branches: main
+    paths: create_release/**
+  push:
+    paths: create_release/**
+      
+jobs:
+  test-create_release:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x, 14.x, 16.x]
+    concurrency: 
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
+    steps:
+      - uses: actions/checkout@v2 # Need to checkout first to use current repo
+      - uses: ./create_release # ottofeller/github-actions/create_release@main
+        id: create-release
+        with:
+          initial-version: 0.0.1
+          release-branches: main
+          bump-level: patch
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      # Since we are testing, clean up after the run and delete the release
+      - uses: liudonghua123/delete-release-action@v1
+        with:
+          release_id: ${{ steps.create-release.outputs.id }}

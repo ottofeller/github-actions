@@ -1,0 +1,104 @@
+name: Bump version tag and create draft release
+description: A GitHub action bumping up the most recent tag and creating a draft release
+inputs:
+  initial-version:
+    description: Initial tag of the package
+    default: 0.0.1
+  release-branches:
+    description: Comma separated list of branches (bash reg exp accepted) that will generate the release tags.
+    default: main
+  github-token:
+    description: GitHub secret token of the repo.
+  bump-level:
+    description: Version level to be bumped
+    default: patch
+  update-root-package_json:
+    description: Use 'npm version' command to update version in package.json within root folder.
+    default: false
+  update-children-path:
+    description: >
+      Use 'npm version' command to update version in package.json files within specified folders.
+      Provide a space separated list of folder paths for each package.json file to be updated.
+      Applies changes only if "update-children-bump-level" input is provided.
+    default: ''
+  update-children-bump-level:
+    description: >
+      A space separated list of version update attribute of npm-version command
+      to be used with "update-children-path" input. Make sure the two lists match in length
+      (for paths with empty or missing values of bump-level no update will be performed).
+    default: ''
+outputs:
+  release-id:
+    description: ID of the created release
+    value: ${{ steps.create-release.outputs.id }}
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: Bump version - dry run
+      id: bump-version
+      uses: anothrNick/github-tag-action@1.36.0
+      env:
+        DEFAULT_BUMP: ${{ inputs.bump-level }}
+        INITIAL_VERSION: ${{ inputs.initial-version }}
+        PRERELEASE_SUFFIX: ""
+        RELEASE_BRANCHES: ${{ inputs.release-branches }}
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+        WITH_V: true
+        DRY_RUN: true
+    - name: Prepare config
+      if: |
+        inputs.update-root-package_json == 'true'
+        || ( inputs.update-children-path && inputs.update-children-bump-level )
+      shell: bash
+      run: |
+        git config --global user.name "GitHubActions"
+        npm config set git-tag-version false
+    - name: Update main package.json
+      if: inputs.update-root-package_json == 'true'
+      shell: bash
+      run: npm version ${{ steps.bump-version.outputs.new_tag }}
+    - name: Update package.json of included packages
+      if: |
+        inputs.update-children-path
+        && inputs.update-children-bump-level
+      shell: bash
+      run: |
+        echo "Update children packages"
+        paths=(${{ inputs.update-children-path }})
+        versions=(${{ inputs.update-children-bump-level }})
+        rootPath=$(pwd)
+        for i in ${!paths[@]}; do
+          echo "path ${i}: ${paths[i]}."
+          echo "version ${i}: ${versions[i]}."
+          cd ${paths[i]} && [ ! -z ${versions[i]} ] && [ ${versions[i]} != 'none' ] && npm version ${versions[i]}
+          cd $rootPath
+        done
+    - name: Commit changes and push
+      if: |
+        inputs.update-root-package_json == 'true'
+        || ( inputs.update-children-path && inputs.update-children-bump-level )
+      shell: bash
+      run: |
+        git add .
+        git commit -m "${{ steps.bump-version.outputs.new_tag || 'Update children packages' }}"
+        git push origin $(git branch --show-current)
+    - name: Bump version and push tag
+      uses: anothrNick/github-tag-action@1.36.0
+      env:
+        CUSTOM_TAG: ${{ steps.bump-version.outputs.new_tag }}
+        INITIAL_VERSION: ${{ inputs.initial-version }}
+        PRERELEASE_SUFFIX: ""
+        RELEASE_BRANCHES: ${{ inputs.release-branches }}
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+    - name: Create Release
+      id: create-release
+      uses: softprops/action-gh-release@v1
+      with:
+        draft: true
+        generate_release_notes: true
+        tag_name: ${{ steps.bump-version.outputs.new_tag }}
+        name: ${{ steps.bump-version.outputs.new_tag }}
