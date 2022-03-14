@@ -3,14 +3,12 @@ A collection of GitHub actions for use within `ottofeller` projects.
 
 # Contents
 The following actions are included:
-
 - npm-run
 - create-release-gh-action
 - publish-npm-gh-action
+
 # `npm-run`
-
 Provides the following functionality:
-
 - Check out a repo
 - Setting up a distribution of the requested Node.js version
 - Install an app
@@ -18,8 +16,7 @@ Provides the following functionality:
 - The dir to the app may be specified
 
 ## Usage
-
-The action sets up node, installs npm packages and runs a command supplied in inputs, see [action.yml](npm-run/action.yml). In order to use the action in your workflow copy the [action.yml](npm-run/action.yml) file into your project and reference it in the workflow file. See [test.yml](.github/workflows/test-npm-run.yml) for an example of the action usage.
+The action sets up node, installs npm packages and runs a command supplied in inputs, see [action.yml](npm-run/action.yml). See [test-npm-run.yml](.github/workflows/test-npm-run.yml) for an example of the action usage.
 
 **Basic:**
 ```yaml
@@ -47,17 +44,14 @@ The `directory` is optional and defaults to `./`.\
 The only required input is `command` which is the command that will be run in `bash` after installation of node and dependencies.
 
 # `create-release`
-
 Provides the following functionality:
-
 - Check out a repo
 - Find the latest tag and bumps it with a new patch version
 - Creates a draft release with the new tag
 - Outputs ID of the created release
 
 ## Usage
-
-The action searches your repo for the most recent tag and creates a new one with patch update, then a draft release is created for the tag, see [action.yml](create-release/action.yml). See [test.yml](.github/workflows/test-create-release.yml) for an example of the action usage.
+The action searches your repo for the most recent tag and creates a new one with patch update, then a draft release is created for the tag, see [action.yml](create-release/action.yml). See [test-create-release.yml](.github/workflows/test-create-release.yml) for an example of the action usage.
 
 **Basic:**
 ```yaml
@@ -106,18 +100,69 @@ Note that the last three inputs create a new commit. `update-children-path` and 
 - provide `update-children-path` and `update-children-bump-level` without `update-root-package_json` to bump version of only the children packages and leave the root one as is;
 - provide the three inputs to update both root and children packages.
 
+# `latest-release-commit-hash-action`
+Obtains the commit hash of the latest release. It does:
+- Search through git history and find the latest release (excluding *prerelease* and *draft* types).
+- Exit with code 1 if no release was found.
+- Output commit hash of the latest release if found.
+
+# Usage
+The action searches your repo for the most recent release tag and outputs its commit hash, , see [action.yml](latest-release-commit-hash/action.yml). See [test-latest-release-commit-hash.yml](.github/workflows/test-latest-release-commit-hash.yml) for an example of the action usage.
+
+## Use the commit hash within a job:
+```yaml
+steps:
+  - id: commit-hash
+    uses: ottofeller/github-actions/latest-release-commit-hash@main
+    with:
+      github-token: ${{ secrets.GITHUB_TOKEN }}
+  - uses: actions/checkout@v2
+    with:
+      fetch-depth: 0
+      ref: ${{ steps.commit-hash.outputs.commit_hash }}
+```
+
+## Pass the commit hash to other jobs:
+```yaml
+jobs:
+  set-commit-hash:
+    runs-on: ubuntu-latest
+    outputs:
+      commit_hash: ${{ steps.commit-hash.outputs.commit_hash }}
+    steps:
+    - id: commit-hash
+      uses: ottofeller/github-actions/latest-release-commit-hash@main
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  lint:
+    needs: set-commit-hash
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+        ref: ${{ needs.set-commit-hash.outputs.commit_hash }}
+    - uses: ottofeller/github-actions/npm-run@main
+      with:
+        command: npm run lint
+```
+
+# Supported syntax
+- Inputs:
+  * `github-token` is required and represents your GitHub token which is used for accessing the repo.
+- Outputs:
+  * `commit_hash` is the commit hash of the latest release found in the repo.
+
 # `publish-npm`
-
 Provides the following functionality:
-
 - Check out a repo
 - Setting up a distribution of the requested Node.js version
 - Install dependencies
 - Publishes the package to a specified registry
 
 # Usage
-
-The action sets up node, installs dependencies and runs an `npm publish` command, see [action.yml](publish-npm/action.yml). See [test.yml](.github/workflows/test-publish-npm.yml) for an example of the action usage.
+The action sets up node, installs dependencies and runs an `npm publish` command, see [action.yml](publish-npm/action.yml). See [test-publish-npm.yml](.github/workflows/test-publish-npm.yml) for an example of the action usage.
 
 **Basic:**
 ```yaml
@@ -154,7 +199,6 @@ jobs:
 ```
 
 ## Supported syntax
-
 * The `node-version`, `registry-url`, `scope` inputs are optional and is similar to `setup-node`. The latter is used under the hood and the inputs are fed into setup action. See [setup-node](https://github.com/actions/setup-node#readme) docs for details. By default `node-version` is set to *16*.
 * `ref` is optional and represents the git reference used for publishing. Used in checkout action and has the same behavior: when checking out the repository that triggered a workflow, this defaults to the reference or SHA for that event; otherwise, uses the default branch.
 * `npm-token` is required and represents your NPM token which is used for access to the registry.

@@ -1,0 +1,27 @@
+name: Test the latest-release-commit-hash action
+
+on:
+  workflow_dispatch:
+    branches: '*'
+  pull_request:
+    branches: main
+    paths: latest-release-commit-hash/**
+  push:
+    paths: latest-release-commit-hash/**
+      
+jobs:
+  test-latest-release-commit-hash:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x, 14.x, 16.x]
+    concurrency: 
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
+    steps:
+      - uses: actions/checkout@v2 # Need to checkout first to use current repo during testing
+      - uses: ./latest-release-commit-hash # ottofeller/github-actions/latest-release-commit-hash@main
+        id: commit-hash
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - run: echo 'Found release at ${{ steps.commit-hash.outputs.commit_hash }}'
