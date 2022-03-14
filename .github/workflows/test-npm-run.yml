@@ -5,9 +5,13 @@ on:
     branches: '*'
   pull_request:
     branches: main
-    paths: npm-run/**
+    paths: 
+      - npm-run/**
+      - .github/workflows/test-npm-run.yml
   push:
-    paths: npm-run/**
+    paths: 
+      - npm-run/**
+      - .github/workflows/test-npm-run.yml
       
 jobs:
   test-npm-run:

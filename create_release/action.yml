@@ -31,6 +31,9 @@ outputs:
   release-id:
     description: ID of the created release
     value: ${{ steps.create-release.outputs.id }}
+  release-name:
+    description: Name of the created release
+    value: ${{ steps.bump-version.outputs.new_tag }}
 
 runs:
   using: composite

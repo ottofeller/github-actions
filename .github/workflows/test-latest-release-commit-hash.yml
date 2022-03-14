@@ -5,16 +5,17 @@ on:
     branches: '*'
   pull_request:
     branches: main
-    paths: latest-release-commit-hash/**
+    paths: 
+      - latest-release-commit-hash/**
+      - .github/workflows/test-latest-release-commit-hash.yml
   push:
-    paths: latest-release-commit-hash/**
+    paths: 
+      - latest-release-commit-hash/**
+      - .github/workflows/test-latest-release-commit-hash.yml
       
 jobs:
   test-latest-release-commit-hash:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [12.x, 14.x, 16.x]
     concurrency: 
       group: ${{ github.workflow }}-${{ github.ref }}
       cancel-in-progress: true

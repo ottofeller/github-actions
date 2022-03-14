@@ -5,16 +5,17 @@ on:
     branches: '*'
   pull_request:
     branches: main
-    paths: publish-npm/**
+    paths: 
+      - publish-npm/**
+      - .github/workflows/test-publish-npm.yml
   push:
-    paths: publish-npm/**
+    paths: 
+      - publish-npm/**
+      - .github/workflows/test-publish-npm.yml
       
 jobs:
   test-publish-npm:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [12.x, 14.x, 16.x]
     concurrency: 
       group: ${{ github.workflow }}-${{ github.ref }}
       cancel-in-progress: true
