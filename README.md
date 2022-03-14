@@ -19,7 +19,7 @@ Provides the following functionality:
 
 ## Usage
 
-The action sets up node, installs npm packages and runs a command supplied in inputs, see [action.yml](npm-run/action.yml). In order to use the action in your workflow copy the [action.yml](npm-run/action.yml) file into your project and reference it in the workflow file. See [test.yml](.github/workflows/test.yml) for an example of the action usage.
+The action sets up node, installs npm packages and runs a command supplied in inputs, see [action.yml](npm-run/action.yml). In order to use the action in your workflow copy the [action.yml](npm-run/action.yml) file into your project and reference it in the workflow file. See [test.yml](.github/workflows/test-npm-run.yml) for an example of the action usage.
 
 **Basic:**
 ```yaml
@@ -57,7 +57,7 @@ Provides the following functionality:
 
 ## Usage
 
-The action searches your repo for the most recent tag and creates a new one with patch update, then a draft release is created for the tag.
+The action searches your repo for the most recent tag and creates a new one with patch update, then a draft release is created for the tag, see [action.yml](create-release/action.yml). See [test.yml](.github/workflows/test-create-release.yml) for an example of the action usage.
 
 **Basic:**
 ```yaml
@@ -105,6 +105,62 @@ Note that the last three inputs create a new commit. `update-children-path` and 
 - provide only `update-root-package_json: true` to bump the root package version and leave children as is;
 - provide `update-children-path` and `update-children-bump-level` without `update-root-package_json` to bump version of only the children packages and leave the root one as is;
 - provide the three inputs to update both root and children packages.
+
+# `publish-npm`
+
+Provides the following functionality:
+
+- Check out a repo
+- Setting up a distribution of the requested Node.js version
+- Install dependencies
+- Publishes the package to a specified registry
+
+# Usage
+
+The action sets up node, installs dependencies and runs an `npm publish` command, see [action.yml](publish-npm/action.yml). See [test.yml](.github/workflows/test-publish-npm.yml) for an example of the action usage.
+
+**Basic:**
+```yaml
+jobs:
+  ...
+
+  publish-npm:
+    needs: [set-commit-hash, lint, test]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: ottofeller/github-actions/publish-npm@main
+        with:
+          npm-token: ${{ secrets.NPM_TOKEN }}
+```
+
+**Advanced:**
+```yaml
+jobs:
+  ...
+
+  publish-npm:
+    needs: [set-commit-hash, lint, test]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: ottofeller/github-actions/publish-npm@main
+        with:
+          ref: ${{ needs.set-commit-hash.outputs.commit_hash }}
+          node-version: 18
+          registry-url: https://npm.pkg.github.com/
+          scope: "@worldcoin"
+          npm-token: ${{ secrets.NPM_TOKEN }}
+          access: restricted
+          include-build-step: true
+```
+
+## Supported syntax
+
+* The `node-version`, `registry-url`, `scope` inputs are optional and is similar to `setup-node`. The latter is used under the hood and the inputs are fed into setup action. See [setup-node](https://github.com/actions/setup-node#readme) docs for details. By default `node-version` is set to *16*.
+* `ref` is optional and represents the git reference used for publishing. Used in checkout action and has the same behavior: when checking out the repository that triggered a workflow, this defaults to the reference or SHA for that event; otherwise, uses the default branch.
+* `npm-token` is required and represents your NPM token which is used for access to the registry.
+* `access` is optional. It is used in `npm publish` command and tells the registry whether this package should be published as *public* or *restricted*. Defaults to *public*.
+* `include-build-step` is an optional flag for running build script (`npm run build` command) before publishing. Defaults to `false`.
+* `dry-run` is an optional flag for running the `npm publish` command with `--dry-run` option. Defaults to `false`.
 
 # License
 The scripts and documentation are not licensed. However the use is restricted to Ottofeller projects.

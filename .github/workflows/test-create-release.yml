@@ -1,4 +1,4 @@
-name: Test the create_release action
+name: Test the create-release action
 
 on:
   workflow_dispatch:
@@ -19,12 +19,12 @@ jobs:
       group: ${{ github.workflow }}-${{ github.ref }}
       cancel-in-progress: true
     steps:
-      - uses: actions/checkout@v2 # Need to checkout first to use current repo
+      - uses: actions/checkout@v2 # Need to checkout first to use current repo during testing
       - uses: ./create_release # ottofeller/github-actions/create_release@main
         id: create-release
         with:
           initial-version: 0.0.1
-          release-branches: main
+          release-branches: ${{ github.ref }}
           bump-level: patch
           github-token: ${{ secrets.GITHUB_TOKEN }}
       # Since we are testing, clean up after the run and delete the release
