@@ -1,0 +1,54 @@
+name: Test the create-release action
+
+on:
+  workflow_dispatch:
+    branches: '*'
+  pull_request:
+    branches: main
+    paths:
+      - create_release/**
+      - .github/workflows/test-create-release.yml
+  push:
+    paths:
+      - create_release/**
+      - .github/workflows/test-create-release.yml
+      
+jobs:
+  test-create-release:
+    runs-on: ubuntu-latest
+    concurrency: 
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
+    steps:
+      - uses: actions/checkout@v2 # Need to checkout first to use current repo during testing
+      - uses: ./create_release # ottofeller/github-actions/create_release@main
+        id: create-release
+        with:
+          initial-version: 0.0.1
+          release-branches: ${{ github.ref }}
+          bump-level: patch
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      # Since we are testing, clean up after the run and delete the release
+      - uses: dev-drprasad/delete-tag-and-release@v0.2.0
+        with:
+          delete_release: false
+          tag_name: ${{ steps.create-release.outputs.release-name }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # The previous action fails to find a draft release.
+      # Thus need to delete it manually with octokit.
+      - uses: actions/github-script@v4
+        env:
+          RELEASE_ID: ${{ steps.create-release.outputs.release-id }}
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const release_id = process.env.RELEASE_ID
+            const { owner, repo } = context.repo
+            try {
+              await github.repos.deleteRelease({ owner, repo, release_id })
+              console.log(`✅  Release "${release_id}" deleted successfully!`)
+            } catch (e) {
+              console.error(e)
+              core.setFailed(`❌  Release "${release_id}" not deleted!`);
+            }

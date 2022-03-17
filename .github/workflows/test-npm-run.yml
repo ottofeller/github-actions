@@ -1,0 +1,36 @@
+name: Test the npm-run action
+
+on: 
+  workflow_dispatch:
+    branches: '*'
+  pull_request:
+    branches: main
+    paths: 
+      - npm-run/**
+      - .github/workflows/test-npm-run.yml
+  push:
+    paths: 
+      - npm-run/**
+      - .github/workflows/test-npm-run.yml
+      
+jobs:
+  test-npm-run:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x, 14.x, 16.x]
+    concurrency: 
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
+    steps:
+      - uses: actions/checkout@v2 # Need to checkout first to use current repo during testing
+      - uses: ./npm-run # ottofeller/github-actions/npm-run@main
+        with:
+          node-version: ${{ matrix.node-version }}
+          registry-url: https://npm.pkg.github.com/
+          scope: "@worldcoin"
+          directory: './'
+          command: node -v # Just log node version
+        env:
+          CI: true
+          NODE_AUTH_TOKEN: SURPRISE

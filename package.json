@@ -1,0 +1,16 @@
+{
+  "name": "github-actions",
+  "version": "0.0.1",
+  "description": "A collection of GitHub actions for use within `ottofeller` projects.",
+  "scripts": {
+    "test": "echo \"No test specified\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ottofeller/github-actions.git"
+  },
+  "keywords": [],
+  "author": "ottofeller",
+  "license": "NA",
+  "homepage": "https://github.com/ottofeller/github-actions#readme"
+}

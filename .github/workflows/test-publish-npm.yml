@@ -1,0 +1,29 @@
+name: Test the publish-npm action
+
+on:
+  workflow_dispatch:
+    branches: '*'
+  pull_request:
+    branches: main
+    paths: 
+      - publish-npm/**
+      - .github/workflows/test-publish-npm.yml
+  push:
+    paths: 
+      - publish-npm/**
+      - .github/workflows/test-publish-npm.yml
+      
+jobs:
+  test-publish-npm:
+    runs-on: ubuntu-latest
+    concurrency: 
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
+    steps:
+      - uses: actions/checkout@v2 # Need to checkout first to use current repo during testing
+      - uses: ./publish-npm # ottofeller/github-actions/publish-npm@main
+        with:
+          registry-url: https://npm.pkg.github.com/
+          scope: "@worldcoin"
+          npm-token: ${{ secrets.NPM_TOKEN }}
+          dry-run: true

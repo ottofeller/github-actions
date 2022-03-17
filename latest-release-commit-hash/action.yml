@@ -1,0 +1,32 @@
+name: Commit hash of the latest release
+description: A GitHub action that obtains the commit hash of the latest release
+
+inputs:
+  github-token:
+    description: GitHub secret token of the repo.
+outputs:
+  commit_hash:
+    description: Commit hash of the latest release as found in the repo
+    value: ${{ steps.commit_hash.outputs.commit_hash }}
+
+runs:
+  using: composite
+  steps:
+    - name: Get the latest release info
+      id: latest_release
+      uses: InsonusK/get-latest-release@v1.0.1
+      with:
+        myToken: ${{ inputs.github-token }}
+        exclude_types: "prerelease|draft"
+        view_top: 100
+    - name: Got the latest release info
+      shell: bash
+      run: echo ${{ steps.latest_release.outputs.tag_name }}
+    - name: No stable release found
+      if: steps.latest_release.outputs.tag_name == null
+      shell: bash
+      run: exit 1
+    - id: commit_hash
+      name: Store the commit hash
+      shell: bash
+      run: echo "::set-output name=commit_hash::$(git rev-list -n 1 ${{ steps.latest_release.outputs.tag_name }})"
