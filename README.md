@@ -107,7 +107,7 @@ Obtains the commit hash of the latest release. It does:
 - Output commit hash of the latest release if found.
 
 # Usage
-The action searches your repo for the most recent release tag and outputs its commit hash, , see [action.yml](latest-release-commit-hash/action.yml). See [test-latest-release-commit-hash.yml](.github/workflows/test-latest-release-commit-hash.yml) for an example of the action usage.
+The action searches your repo for the most recent release tag and outputs its commit hash, see [action.yml](latest-release-commit-hash/action.yml). See [test-latest-release-commit-hash.yml](.github/workflows/test-latest-release-commit-hash.yml) for an example of the action usage.
 
 ## Use the commit hash within a job:
 ```yaml
