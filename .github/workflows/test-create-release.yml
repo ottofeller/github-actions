@@ -6,11 +6,11 @@ on:
   pull_request:
     branches: main
     paths:
-      - create_release/**
+      - create-release/**
       - .github/workflows/test-create-release.yml
   push:
     paths:
-      - create_release/**
+      - create-release/**
       - .github/workflows/test-create-release.yml
       
 jobs:
@@ -21,7 +21,7 @@ jobs:
       cancel-in-progress: true
     steps:
       - uses: actions/checkout@v2 # Need to checkout first to use current repo during testing
-      - uses: ./create_release # ottofeller/github-actions/create_release@main
+      - uses: ./create-release # ottofeller/github-actions/create-release@main
         id: create-release
         with:
           initial-version: 0.0.1
