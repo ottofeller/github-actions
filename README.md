@@ -100,7 +100,7 @@ Note that the last three inputs create a new commit. `update-children-path` and 
 - provide `update-children-path` and `update-children-bump-level` without `update-root-package_json` to bump version of only the children packages and leave the root one as is;
 - provide the three inputs to update both root and children packages.
 
-# `latest-release-commit-hash-action`
+# `latest-release-commit-hash`
 Obtains the commit hash of the latest release. It does:
 - Search through git history and find the latest release (excluding *prerelease* and *draft* types).
 - Exit with code 1 if no release was found.
