@@ -1,12 +1,6 @@
 # GitHub actions
 A collection of GitHub actions for use within `ottofeller` projects.
 
-# Contents
-The following actions are included:
-- npm-run
-- create-release-gh-action
-- publish-npm-gh-action
-
 # `npm-run`
 Provides the following functionality:
 - Check out a repo
