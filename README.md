@@ -100,10 +100,10 @@ Obtains the commit hash of the latest release. It does:
 - Exit with code 1 if no release was found.
 - Output commit hash of the latest release if found.
 
-# Usage
+## Usage
 The action searches your repo for the most recent release tag and outputs its commit hash, see [action.yml](latest-release-commit-hash/action.yml). See [test-latest-release-commit-hash.yml](.github/workflows/test-latest-release-commit-hash.yml) for an example of the action usage.
 
-## Use the commit hash within a job:
+### Use the commit hash within a job:
 ```yaml
 steps:
   - id: commit-hash
@@ -116,7 +116,7 @@ steps:
       ref: ${{ steps.commit-hash.outputs.commit_hash }}
 ```
 
-## Pass the commit hash to other jobs:
+### Pass the commit hash to other jobs:
 ```yaml
 jobs:
   set-commit-hash:
@@ -142,7 +142,7 @@ jobs:
         command: npm run lint
 ```
 
-# Supported syntax
+## Supported syntax
 - Inputs:
   * `github-token` is required and represents your GitHub token which is used for accessing the repo.
 - Outputs:
@@ -155,7 +155,7 @@ Provides the following functionality:
 - Install dependencies
 - Publishes the package to a specified registry
 
-# Usage
+## Usage
 The action sets up node, installs dependencies and runs an `npm publish` command, see [action.yml](publish-npm/action.yml). See [test-publish-npm.yml](.github/workflows/test-publish-npm.yml) for an example of the action usage.
 
 **Basic:**
