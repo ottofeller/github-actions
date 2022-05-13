@@ -27,6 +27,9 @@ inputs:
   dry-run:
     description: A flag for running the command with "--dry-run" option.
     default: false
+  directory:
+    description: A directory with the package to publish
+    default: ./
 
 runs:
   using: composite
@@ -40,6 +43,7 @@ runs:
         node-version: ${{ inputs.node-version }}
         registry-url: ${{ inputs.registry-url }}
         scope: ${{ inputs.scope }}
+        directory: ${{ inputs.directory }}
         command: >
           if [[ ${{ inputs.include-build-step }} = true ]];
           then npm run build;
