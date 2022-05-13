@@ -190,6 +190,7 @@ jobs:
           npm-token: ${{ secrets.NPM_TOKEN }}
           access: restricted
           include-build-step: true
+          directory: packages/app
 ```
 
 ## Supported syntax
@@ -199,6 +200,7 @@ jobs:
 * `access` is optional. It is used in `npm publish` command and tells the registry whether this package should be published as *public* or *restricted*. Defaults to *public*.
 * `include-build-step` is an optional flag for running build script (`npm run build` command) before publishing. Defaults to `false`.
 * `dry-run` is an optional flag for running the `npm publish` command with `--dry-run` option. Defaults to `false`.
+* `directory` is optional and defaults to `./`.
 
 # License
 The scripts and documentation are not licensed. However the use is restricted to Ottofeller projects.
