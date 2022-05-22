@@ -12,8 +12,11 @@ inputs:
     default: 16
   registry-url:
     description: >
-      Optional registry to set up for auth. Will set the registry in a project level .npmrc and .yarnrc file,
-      and set up auth to read in from env.NODE_AUTH_TOKEN
+      Registry to set up for auth. Will set the registry in a project level .npmrc and .yarnrc file,
+      and set up auth to read in from env.NODE_AUTH_TOKEN.
+      Even though this input is optional in setup-node action, a value is required to setup authentication,
+      which is essential for publishing. Thus a fallback is provided.
+    default: https://registry.npmjs.org/
   scope:
     description: Optional scope for authenticating against scoped registries
   npm-token:
