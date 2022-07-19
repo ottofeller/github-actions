@@ -12,6 +12,8 @@ Provides the following functionality:
 ## Usage
 The action sets up node, installs npm packages and runs a command supplied in inputs, see [action.yml](npm-run/action.yml). See [test-npm-run.yml](.github/workflows/test-npm-run.yml) for an example of the action usage.
 
+NOTE: You do not need to check out the repo before running the action. Moreover if you do check it out, the result will be thrown away as the action checks out from a provided ref (with default branch as a fallback).
+
 **Basic:**
 ```yaml
 steps:
