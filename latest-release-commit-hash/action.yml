@@ -26,6 +26,9 @@ runs:
       if: steps.latest_release.outputs.tag_name == null
       shell: bash
       run: exit 1
+    - name: Echo the commit hash # This step ensures that the call to git does not fail.
+      shell: bash
+      run: git rev-list -n 1 ${{ steps.latest_release.outputs.tag_name }}
     - id: commit_hash
       name: Store the commit hash
       shell: bash
