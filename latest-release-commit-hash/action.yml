@@ -12,6 +12,9 @@ outputs:
 runs:
   using: composite
   steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0 # Need to load all the history
     - name: Get the latest release info
       id: latest_release
       uses: InsonusK/get-latest-release@v1.0.1
