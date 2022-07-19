@@ -2,6 +2,11 @@ name: Run a command in node environment
 description: A GitHub action setting up node, installing npm packages and running a specified command
 
 inputs:
+  ref:
+    description: >
+      Git reference used in checkout action.
+      When checking out the repository that triggered a workflow, this defaults to the reference or SHA for that event.
+      Otherwise, uses the default branch.
   node-version:
     description: 'Version Spec of the version to use.  Examples: 12.x, 10.15.1, >=10.15.0'
   registry-url:
@@ -23,6 +28,7 @@ runs:
     - uses: actions/checkout@v2
       with:
         fetch-depth: 0
+        ref: ${{ inputs.ref }}
     - name: Set up Node
       uses: actions/setup-node@v2
       with:
