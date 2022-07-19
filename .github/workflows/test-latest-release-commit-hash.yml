@@ -12,7 +12,7 @@ on:
     paths: 
       - latest-release-commit-hash/**
       - .github/workflows/test-latest-release-commit-hash.yml
-      
+
 jobs:
   test-latest-release-commit-hash:
     runs-on: ubuntu-latest
