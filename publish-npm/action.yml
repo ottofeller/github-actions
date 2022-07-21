@@ -37,12 +37,9 @@ inputs:
 runs:
   using: composite
   steps:
-    - uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
-        ref: ${{ inputs.ref }}
     - uses: ottofeller/github-actions/npm-run@main
       with:
+        ref: ${{ inputs.ref }}
         node-version: ${{ inputs.node-version }}
         registry-url: ${{ inputs.registry-url }}
         scope: ${{ inputs.scope }}

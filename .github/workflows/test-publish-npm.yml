@@ -23,6 +23,7 @@ jobs:
       - uses: actions/checkout@v2 # Need to checkout first to use current repo during testing
       - uses: ./publish-npm # ottofeller/github-actions/publish-npm@main
         with:
+          ref: ${{ github.ref }}
           registry-url: https://npm.pkg.github.com/
           scope: "@worldcoin"
           npm-token: ${{ secrets.NPM_TOKEN }}
