@@ -29,13 +29,20 @@ runs:
       with:
         fetch-depth: 0
         ref: ${{ inputs.ref }}
+    - name: Cache node_modules
+      id: cache-npm
+      uses: actions/cache@v3
+      with:
+        key: ${{ hashFiles( format('{0}/{1}', inputs.directory, 'package-lock.json') ) }}
+        path: ${{ inputs.directory }}/node_modules
     - name: Set up Node
       uses: actions/setup-node@v2
       with:
         node-version: ${{ inputs.node-version }}
         registry-url: ${{ inputs.registry-url }}
         scope: ${{ inputs.scope }}
-    - name: Install
+    - if: ${{ steps.cache-npm.outputs.cache-hit != 'true' }}
+      name: Install
       run: |
         cd ${{ inputs.directory }}
         npm install

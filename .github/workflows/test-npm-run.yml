@@ -31,7 +31,7 @@ jobs:
           registry-url: https://npm.pkg.github.com/
           scope: "@worldcoin"
           directory: './'
-          command: node -v # Just log node version
+          command: npm list # List package dependencies (fails if node_modules folder missing)
         env:
           CI: true
           NODE_AUTH_TOKEN: SURPRISE
