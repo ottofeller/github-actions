@@ -33,7 +33,7 @@ runs:
       id: cache-npm
       uses: actions/cache@v3
       with:
-        key: ${{ hashFiles( format('{0}/{1}', inputs.directory, 'package-lock.json') ) }}
+        key: ${{ hashFiles( format('{0}/{1}', inputs.directory, 'package.json') ) }}
         path: ${{ inputs.directory }}/node_modules
     - name: Set up Node
       uses: actions/setup-node@v2
