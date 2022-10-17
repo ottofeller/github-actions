@@ -29,12 +29,6 @@ runs:
       with:
         fetch-depth: 0
         ref: ${{ inputs.ref }}
-    - name: Cache node_modules
-      id: cache-npm
-      uses: actions/cache@v3
-      with:
-        key: ${{ hashFiles( format('{0}/{1}', inputs.directory, 'package.json') ) }}
-        path: ${{ inputs.directory }}/node_modules
     - name: Set up Node
       uses: actions/setup-node@v3
       with:
