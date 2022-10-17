@@ -35,4 +35,4 @@ runs:
     - id: commit_hash
       name: Store the commit hash
       shell: bash
-      run: echo "::set-output name=commit_hash::$(git rev-list -n 1 ${{ steps.latest_release.outputs.tag_name }})"
+      run: echo "commit_hash=$(git rev-list -n 1 ${{ steps.latest_release.outputs.tag_name }})" >> $GITHUB_OUTPUT
