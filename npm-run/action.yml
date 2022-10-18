@@ -35,8 +35,9 @@ runs:
         node-version: ${{ inputs.node-version }}
         registry-url: ${{ inputs.registry-url }}
         scope: ${{ inputs.scope }}
-    - if: ${{ steps.cache-npm.outputs.cache-hit != 'true' }}
-      name: Install
+        cache: "npm"
+        cache-dependency-path: "${{ inputs.directory }}/package-lock.json"
+    - name: Install
       run: |
         cd ${{ inputs.directory }}
         npm install
