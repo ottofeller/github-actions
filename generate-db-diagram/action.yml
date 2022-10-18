@@ -34,12 +34,7 @@ runs:
       shell: bash
       run: |
         ./mermerd --connectionString ${{ inputs.connection-string }} --outputFileName ${{ inputs.output-filename }} --debug --schema public --useAllTables
-    - name: Check if there are changes in the diagram file
-      id: check_changes
-      shell: bash
-      run: echo "::set-output name=changed::$(git diff --quiet ${{ inputs.output-filename }} && echo NO || echo YES)"
     - name: Prepare git config, commit changes and push
-      if: ${{ steps.check_changes.outputs.changed == 'YES' }}
       shell: bash
       run: |
         git config --global user.name "GitHubActions"
