@@ -204,5 +204,57 @@ jobs:
 * `dry-run` is an optional flag for running the `npm publish` command with `--dry-run` option. Defaults to `false`.
 * `directory` is optional and defaults to `./`.
 
+# `generate-db-diagram`
+Provides the following functionality:
+- Downloads mermerd tarball and extracts the executable
+- Runs mermerd either with run config file or with `connectionString` CLI parameter
+- Checks for changes and commits the created/updated file to the repo
+
+## Usage
+For detailed steps of the action see [action.yml](generate-db-diagram/action.yml). See below for examples of the action usage.
+
+NOTE: You do not need to check out the repo before running the action.
+
+**With [run config](https://github.com/KarnerTh/mermerd#use-a-predefined-run-configuration-eg-for-cicd):**
+```yaml
+steps:
+- uses: ottofeller/github-actions/generate-db-diagram@main
+  with:
+    run-config: ./yourRunConfig.yaml
+```
+
+**With connection string:**
+```yaml
+steps:
+- uses: ottofeller/github-actions/generate-db-diagram@main
+  with:
+    connection-string: postgresql://user:password@localhost:5432/yourDb
+```
+
+**Specify output filename:**
+```yaml
+steps:
+- uses: ottofeller/github-actions/generate-db-diagram@main
+  with:
+    run-config: ./yourRunConfig.yaml
+    output-filename: diagram.mmd
+```
+
+**Specify mermerd tarball URL:**
+```yaml
+steps:
+- uses: ottofeller/github-actions/generate-db-diagram@main
+  with:
+    mermerd-tarball-url: https://github.com/KarnerTh/mermerd/releases/download/v0.3.0/mermerd_0.3.0_linux_amd64.tar.gz
+    run-config: ./yourRunConfig.yaml
+    output-filename: diagram.mmd
+```
+
+## Supported syntax
+- `mermerd-tarball-url` is the URL to download mermerd executable from. Defaults to `v0.4.1` asset stored on github.
+- `run-config` is the path to a run config file (YAML). If provided connection-string option is ignored.
+- `connection-string` is the connection string for the DB.
+- `output-filename` is the output file name. Defaults to `result.mmd`. When using run config file make sure the output matches the default one o remember to provide the custom one with this option.
+
 # License
 The scripts and documentation are not licensed. However the use is restricted to Ottofeller projects.

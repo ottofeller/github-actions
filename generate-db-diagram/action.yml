@@ -1,0 +1,49 @@
+name: Generate a DB diagram
+description: A GitHub action generating Mermaid-Js ERD diagrams from existing DB tables.
+inputs:
+  mermerd-tarball-url:
+    description: URL to download mermerd executable from
+    default: https://github.com/KarnerTh/mermerd/releases/download/v0.4.1/mermerd_0.4.1_linux_amd64.tar.gz
+  run-config:
+    description: The path to a run config file (YAML). If provided connection-string option is ignored.
+    default: ''
+  connection-string:
+    description: Connection string for the DB
+    default: ''
+  output-filename:
+    description: Output file name
+    default: result.mmd
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: Fetch mermerd
+      shell: bash
+      run: |
+        wget -qO- ${{ inputs.mermerd-tarball-url }} | \
+        tar -xvzf - mermerd
+    - name: Run mermerd with a run config
+      if: ${{ inputs.run-config != '' }}
+      shell: bash
+      run: ./mermerd
+    - name: Run mermerd with connection-string CLI parameter
+      if: ${{ inputs.run-config == '' }}
+      shell: bash
+      run: |
+        ./mermerd --connectionString ${{ inputs.connection-string }} --outputFileName ${{ inputs.output-filename }}
+    - name: Check if there are changes in the diagram file
+      id: check_changes
+      shell: bash
+      run: echo "::set-output name=changed::$(git diff --quiet ${{ inputs.output-filename }} && echo NO || echo YES)"
+    - name: Prepare git config, commit changes and push
+      if: ${{ steps.check_changes.outputs.changed == 'YES' }}
+      shell: bash
+      run: |
+        git config --global user.name "GitHubActions"
+        npm config set git-tag-version false
+        git add ${{ inputs.output-filename }}
+        git commit -m "Update DB diagram"
+        git push origin $(git branch --show-current)
