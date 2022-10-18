@@ -33,7 +33,7 @@ runs:
       if: ${{ inputs.run-config == '' }}
       shell: bash
       run: |
-        ./mermerd --connectionString ${{ inputs.connection-string }} --outputFileName ${{ inputs.output-filename }} --debug
+        ./mermerd --connectionString ${{ inputs.connection-string }} --outputFileName ${{ inputs.output-filename }} --debug --schema public
     - name: Check if there are changes in the diagram file
       id: check_changes
       shell: bash
