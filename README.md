@@ -112,7 +112,7 @@ steps:
     uses: ottofeller/github-actions/latest-release-commit-hash@main
     with:
       github-token: ${{ secrets.GITHUB_TOKEN }}
-  - uses: actions/checkout@v2
+  - uses: actions/checkout@v3
     with:
       fetch-depth: 0
       ref: ${{ steps.commit-hash.outputs.commit_hash }}
@@ -135,7 +135,7 @@ jobs:
     needs: set-commit-hash
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         fetch-depth: 0
         ref: ${{ needs.set-commit-hash.outputs.commit_hash }}

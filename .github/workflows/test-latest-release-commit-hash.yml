@@ -20,7 +20,7 @@ jobs:
       group: ${{ github.workflow }}-${{ github.ref }}
       cancel-in-progress: true
     steps:
-      - uses: actions/checkout@v2 # Need to checkout first to use current repo during testing
+      - uses: actions/checkout@v3 # Need to checkout first to use current repo during testing
       - uses: ./latest-release-commit-hash # ottofeller/github-actions/latest-release-commit-hash@main
         id: commit-hash
         with:
