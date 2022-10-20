@@ -1,0 +1,38 @@
+name: Generate a documentation page for GraphQL schema
+description: A GitHub action generating an HTML page with documentation based on provided GraphQL schema.
+inputs:
+  config-path:
+    description: The path to a config file (YAML).
+    default: ''
+  introspection-url:
+    description: URL for an Introspection Query
+    default: http://localhost:3000/
+  headers:
+    description: Arbitrary headers for the Introspection Query as a JSON string
+    default: ''
+  target-dir:
+    description: Output folder name
+    default: public
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - name: Run spectaql with a config
+      shell: bash
+      run: |
+        npx spectaql ${{ inputs.config-path || 'generate-graphql-docs/config.yml' }} \
+        --introspection-url ${{ inputs.introspection-url }} \
+        ${{ inputs.headers != '' && format('--headers {0}', inputs.headers) || '' }} \
+        --target-dir ${{ inputs.target-dir }}
+    - name: Prepare git config, commit changes and push
+      shell: bash
+      run: |
+        git config --global user.name "GitHubActions"
+        git config --global user.email "<>"
+        npm config set git-tag-version false
+        git add ${{ inputs.target-dir }}
+        git commit -m "Update GraphQL docs"
+        git push origin $(git branch --show-current)
