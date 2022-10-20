@@ -10,6 +10,12 @@ inputs:
   connection-string:
     description: Connection string for the DB
     default: ''
+  schema:
+    description: Schema that should be used
+    default: public
+  tables:
+    description: Tables to include
+    default: ''
   output-filename:
     description: Output file name
     default: result.mmd
@@ -33,11 +39,17 @@ runs:
       if: ${{ inputs.run-config == '' }}
       shell: bash
       run: |
-        ./mermerd --connectionString ${{ inputs.connection-string }} --outputFileName ${{ inputs.output-filename }} --debug --schema public --useAllTables
+        ./mermerd \
+        --connectionString ${{ inputs.connection-string }} \
+        --outputFileName ${{ inputs.output-filename }} \
+        --schema ${{ inputs.schema }} \
+        ${{ inputs.tables != '' && format('--selectedTables {0}', inputs.tables) || '--useAllTables' }} \
+        --debug
     - name: Prepare git config, commit changes and push
       shell: bash
       run: |
         git config --global user.name "GitHubActions"
+        git config --global user.email "<>"
         npm config set git-tag-version false
         git add ${{ inputs.output-filename }}
         git commit -m "Update DB diagram"
