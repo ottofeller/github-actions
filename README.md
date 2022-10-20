@@ -250,10 +250,22 @@ steps:
     output-filename: diagram.mmd
 ```
 
+**Specify schema and tables to use:**
+```yaml
+steps:
+- uses: ottofeller/github-actions/generate-db-diagram@main
+  with:
+    connection-string: postgresql://user:password@localhost:5432/yourDb
+    schema: hollywood
+    tables: films,actors,awards
+```
+
 ## Supported syntax
 - `mermerd-tarball-url` is the URL to download mermerd executable from. Defaults to `v0.4.1` asset stored on github.
 - `run-config` is the path to a run config file (YAML). If provided connection-string option is ignored.
 - `connection-string` is the connection string for the DB.
+- `schema` is the schema that should be used. Default tu `public`.
+- `tables` is a list of tables to include. Defaults to all tables.
 - `output-filename` is the output file name. Defaults to `result.mmd`. When using run config file make sure the output matches the default one o remember to provide the custom one with this option.
 
 # License
