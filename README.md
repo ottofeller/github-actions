@@ -257,7 +257,7 @@ steps:
 - `output-filename` is the output file name. Defaults to `result.mmd`. When using run config file make sure the output matches the default one o remember to provide the custom one with this option.
 
 # `generate-graphql-docs`
-Runs `spectaql` to get Introspection Query and generates static documentation for a GraphQL schema.
+Runs [`spectaql`](https://github.com/anvilco/spectaql) to get Introspection Query and generates static documentation for a GraphQL schema.
 
 ## Usage
 For detailed steps of the action see [action.yml](generate-graphql-docs/action.yml). See below for examples of the action usage.
