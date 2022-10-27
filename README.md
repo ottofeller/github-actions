@@ -284,7 +284,7 @@ steps:
 ```
 
 ## Supported syntax
-- `config-path` is the path to a config file (YAML). Defaults to the config stored with the action. The latter sets only basic page info and no data for server querying.
+- `config-path` is the path to a config file (YAML). Defaults to the config stored with the action. The latter sets only basic page info and no data for server querying. If you choose to use a custom config refer to the [spectaql readme](https://github.com/anvilco/spectaql#yaml-options) for a description of the file structure and examples.
 - `introspection-url` is the URL for an Introspection Query. Defaults to `http://localhost:3000/`.
 - `headers` is an arbitrary set of headers for the Introspection Query as a JSON string. Empty by default.
 - `target-dir` is the output folder name. Defaults to `public`.
