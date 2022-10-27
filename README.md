@@ -267,7 +267,7 @@ NOTE: You do not need to check out the repo before running the action.
 **Only with an introspection-url:**
 ```yaml
 steps:
-- uses: ottofeller/github-actions/generate-db-diagram@main
+- uses: ottofeller/github-actions/generate-graphql-docs@main
   with:
     introspection-url: https://server.graphql/introspect
 ```
@@ -275,7 +275,7 @@ steps:
 **With a custom [config](https://github.com/anvilco/spectaql#yaml-options):**
 ```yaml
 steps:
-- uses: ottofeller/github-actions/generate-db-diagram@main
+- uses: ottofeller/github-actions/generate-graphql-docs@main
   with:
     config-path: ./yourConfig.yaml
     introspection-url: https://server.graphql/introspect
