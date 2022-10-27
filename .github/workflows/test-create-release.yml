@@ -9,6 +9,7 @@ on:
       - create-release/**
       - .github/workflows/test-create-release.yml
   push:
+    branches: main
     paths:
       - create-release/**
       - .github/workflows/test-create-release.yml

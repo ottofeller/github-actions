@@ -9,6 +9,7 @@ on:
       - latest-release-commit-hash/**
       - .github/workflows/test-latest-release-commit-hash.yml
   push:
+    branches: main
     paths: 
       - latest-release-commit-hash/**
       - .github/workflows/test-latest-release-commit-hash.yml

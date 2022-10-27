@@ -9,6 +9,7 @@ on:
       - npm-run/**
       - .github/workflows/test-npm-run.yml
   push:
+    branches: main
     paths: 
       - npm-run/**
       - .github/workflows/test-npm-run.yml

@@ -9,6 +9,7 @@ on:
       - publish-npm/**
       - .github/workflows/test-publish-npm.yml
   push:
+    branches: main
     paths: 
       - publish-npm/**
       - .github/workflows/test-publish-npm.yml
