@@ -1,0 +1,10 @@
+info:
+  title: GraphQL API Reference
+  description: This page provides a GraphQL schema description.
+  contact:
+    name: Ottofeller
+    url: ottofeller.com
+    email: artem@ottofeller.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html

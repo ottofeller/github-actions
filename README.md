@@ -268,5 +268,38 @@ steps:
 - `tables` is a list of tables to include. Defaults to all tables.
 - `output-filename` is the output file name. Defaults to `result.mmd`. When using run config file make sure the output matches the default one o remember to provide the custom one with this option.
 
+# `generate-graphql-docs`
+Runs [`spectaql`](https://github.com/anvilco/spectaql) to get Introspection Query and generates static documentation for a GraphQL schema.
+
+## Usage
+For detailed steps of the action see [action.yml](generate-graphql-docs/action.yml). See below for examples of the action usage.
+
+NOTE: You do not need to check out the repo before running the action.
+
+**Only with an introspection-url:**
+```yaml
+steps:
+- uses: ottofeller/github-actions/generate-graphql-docs@main
+  with:
+    introspection-url: https://server.graphql/introspect
+```
+
+**With a custom [config](https://github.com/anvilco/spectaql#yaml-options):**
+```yaml
+steps:
+- uses: ottofeller/github-actions/generate-graphql-docs@main
+  with:
+    config-path: ./yourConfig.yaml
+    introspection-url: https://server.graphql/introspect
+    headers: ${{ format('{"x-access-token":"{0}"}', github.ACCESS_TOKEN) }}
+    target-dir: docs/graphql
+```
+
+## Supported syntax
+- `config-path` is the path to a config file (YAML). Defaults to the config stored with the action. The latter sets only basic page info and no data for server querying. If you choose to use a custom config refer to the [spectaql readme](https://github.com/anvilco/spectaql#yaml-options) for a description of the file structure and examples.
+- `introspection-url` is the URL for an Introspection Query. Defaults to `http://localhost:3000/`.
+- `headers` is an arbitrary set of headers for the Introspection Query as a JSON string. Empty by default.
+- `target-dir` is the output folder name. Defaults to `public`.
+
 # License
 The scripts and documentation are not licensed. However the use is restricted to Ottofeller projects.
