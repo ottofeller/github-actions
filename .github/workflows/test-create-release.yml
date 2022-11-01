@@ -9,6 +9,7 @@ on:
       - create-release/**
       - .github/workflows/test-create-release.yml
   push:
+    branches: main
     paths:
       - create-release/**
       - .github/workflows/test-create-release.yml
@@ -37,7 +38,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # The previous action fails to find a draft release.
       # Thus need to delete it manually with octokit.
-      - uses: actions/github-script@v4
+      - uses: actions/github-script@v6
         env:
           RELEASE_ID: ${{ steps.create-release.outputs.release-id }}
         with:
@@ -46,7 +47,7 @@ jobs:
             const release_id = process.env.RELEASE_ID
             const { owner, repo } = context.repo
             try {
-              await github.repos.deleteRelease({ owner, repo, release_id })
+              await github.rest.repos.deleteRelease({ owner, repo, release_id })
               console.log(`✅  Release "${release_id}" deleted successfully!`)
             } catch (e) {
               console.error(e)
