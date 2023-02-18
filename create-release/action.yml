@@ -27,6 +27,9 @@ inputs:
       to be used with "update-children-path" input. Make sure the two lists match in length
       (for paths with empty or missing values of bump-level no update will be performed).
     default: ''
+  projen:
+    description: Update version in package.json within root folder via projen.
+    default: false
 outputs:
   release-id:
     description: ID of the created release
@@ -59,11 +62,21 @@ runs:
       shell: bash
       run: |
         git config --global user.name "GitHubActions"
+        git config --global user.email "github-actions@users.noreply.github.com"
         npm config set git-tag-version false
-    - name: Update main package.json
-      if: inputs.update-root-package_json == 'true'
+    - name: Update main package.json via npm
+      if: inputs.update-root-package_json == 'true' && inputs.projen != 'true'
       shell: bash
       run: npm version ${{ steps.bump-version.outputs.new_tag }}
+    - name: Update main package.json via projen
+      if: inputs.update-root-package_json == 'true' && inputs.projen == 'true'
+      shell: bash
+      run: |
+        fileName=$([ -f .projenrc.ts ] && echo ".projenrc.ts" || echo ".projenrc.js")
+        regex="package.addField('version', '[0-9]\.[0-9]\.[0-9]')"
+        newVersion=$(echo ${{ steps.bump-version.outputs.new_tag }} | cut -c 2-6)
+        sed -i -e "s/$regex/package.addField('version', '$newVersion')/" $fileName
+        npm run default
     - name: Update package.json of included packages
       if: |
         inputs.update-children-path
