@@ -21,7 +21,7 @@ jobs:
       group: ${{ github.workflow }}-${{ github.ref }}
       cancel-in-progress: true
     steps:
-      - uses: actions/checkout@v3 # Need to checkout first to use current repo during testing
+      - uses: actions/checkout@v4 # Need to checkout first to use current repo during testing
       - uses: ./publish-npm # ottofeller/github-actions/publish-npm@main
         with:
           ref: ${{ github.ref }}

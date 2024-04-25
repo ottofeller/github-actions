@@ -12,12 +12,12 @@ outputs:
 runs:
   using: composite
   steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0 # Need to load all the history
     - name: Get the latest release info
       id: latest_release
-      uses: InsonusK/get-latest-release@v1.0.1
+      uses: InsonusK/get-latest-release@v1.1.0
       with:
         myToken: ${{ inputs.github-token }}
         exclude_types: "prerelease|draft"

@@ -19,12 +19,12 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [16.x]
+        node-version: [16.x, 20.x]
     concurrency: 
-      group: ${{ github.workflow }}-${{ github.ref }}
+      group: ${{ github.workflow }}-${{ github.ref }}-${{ matrix.node-version }}
       cancel-in-progress: true
     steps:
-      - uses: actions/checkout@v3 # Need to checkout first to use current repo during testing
+      - uses: actions/checkout@v4 # Need to checkout first to use current repo during testing
       - uses: ./npm-run # ottofeller/github-actions/npm-run@main
         with:
           ref: ${{ github.ref }}

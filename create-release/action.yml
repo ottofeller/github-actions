@@ -38,12 +38,12 @@ outputs:
 runs:
   using: composite
   steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0
     - name: Bump version - dry run
       id: bump-version
-      uses: anothrNick/github-tag-action@1.36.0
+      uses: anothrNick/github-tag-action@1.67.0
       env:
         DEFAULT_BUMP: ${{ inputs.bump-level }}
         INITIAL_VERSION: ${{ inputs.initial-version }}
@@ -90,7 +90,7 @@ runs:
         git commit -m "${{ steps.bump-version.outputs.new_tag || 'Update children packages' }}"
         git push origin $(git branch --show-current)
     - name: Bump version and push tag
-      uses: anothrNick/github-tag-action@1.36.0
+      uses: anothrNick/github-tag-action@1.67.0
       env:
         CUSTOM_TAG: ${{ steps.bump-version.outputs.new_tag }}
         INITIAL_VERSION: ${{ inputs.initial-version }}
@@ -99,7 +99,7 @@ runs:
         GITHUB_TOKEN: ${{ inputs.github-token }}
     - name: Create Release
       id: create-release
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@v2
       with:
         draft: true
         generate_release_notes: true
