@@ -21,7 +21,7 @@ jobs:
       group: ${{ github.workflow }}-${{ github.ref }}
       cancel-in-progress: true
     steps:
-      - uses: actions/checkout@v3 # Need to checkout first to use current repo during testing
+      - uses: actions/checkout@v4 # Need to checkout first to use current repo during testing
       - uses: ./create-release # ottofeller/github-actions/create-release@main
         id: create-release
         with:
@@ -30,7 +30,7 @@ jobs:
           bump-level: patch
           github-token: ${{ secrets.GITHUB_TOKEN }}
       # Since we are testing, clean up after the run and delete the release
-      - uses: dev-drprasad/delete-tag-and-release@v0.2.0
+      - uses: dev-drprasad/delete-tag-and-release@v1.1
         with:
           delete_release: false
           tag_name: ${{ steps.create-release.outputs.release-name }}
@@ -38,7 +38,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # The previous action fails to find a draft release.
       # Thus need to delete it manually with octokit.
-      - uses: actions/github-script@v6
+      - uses: actions/github-script@v7
         env:
           RELEASE_ID: ${{ steps.create-release.outputs.release-id }}
         with:
